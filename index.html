@@ -839,12 +839,12 @@
         </div>
         <div class="tier-bar">
             <div class="tier-label">NVLink 1</div>
-            <div class="tier-fill" style="width: 5%; background: rgba(118,185,0,0.5); color: #76B900;">80 GB/s</div>
+            <div class="tier-fill" style="width: 9%; background: rgba(118,185,0,0.5); color: #76B900;">160 GB/s</div>
             <div class="tier-cost">P100</div>
         </div>
         <div class="tier-bar">
             <div class="tier-label">NVLink 2</div>
-            <div class="tier-fill" style="width: 9%; background: rgba(118,185,0,0.6); color: #76B900;">150 GB/s</div>
+            <div class="tier-fill" style="width: 17%; background: rgba(118,185,0,0.6); color: #76B900;">300 GB/s</div>
             <div class="tier-cost">V100</div>
         </div>
         <div class="tier-bar">
@@ -876,7 +876,7 @@
     <div class="slide-number">02</div>
     <h2>NVLink 1 &mdash; Pascal (2016)</h2>
 
-    <p>The P100 introduced NVLink: NVIDIA's answer to "PCIe 3.0 is far too slow to gang GPUs". Each P100 has <strong>4 NVLink 1.0 links</strong>, each carrying <strong>20 GB/s/dir bidirectional</strong> &mdash; aggregate <strong>80 GB/s/GPU</strong>. That is more than 5&times; PCIe 3.0 x16 (16 GB/s).</p>
+    <p>The P100 introduced NVLink: NVIDIA's answer to "PCIe 3.0 is far too slow to gang GPUs". Each P100 has <strong>4 NVLink 1.0 links</strong>, each carrying <strong>20 GB/s/dir</strong> (40 GB/s bidirectional) &mdash; aggregate <strong>160 GB/s/GPU</strong> bidirectional. That is more than 10&times; PCIe 3.0 x16 (16 GB/s).</p>
 
     <h3>Physical layer</h3>
     <ul>
@@ -898,7 +898,7 @@
         <span class="diagram-arrow">&harr;</span>
         <div class="diagram-box">P100</div>
     </div>
-    <p style="text-align:center; font-size:0.85rem;"><em>4 NVLink 1.0 ports per P100, mesh in DGX-1 &rarr; 80 GB/s aggregate per GPU.</em></p>
+    <p style="text-align:center; font-size:0.85rem;"><em>4 NVLink 1.0 ports per P100, mesh in DGX-1 &rarr; 160 GB/s aggregate bidirectional per GPU.</em></p>
 
     <div class="callout">
         <div class="callout-label">Historical aside</div>
@@ -912,7 +912,7 @@
     <div class="slide-number">03</div>
     <h2>NVLink 2 &mdash; Volta (2017) and the First NVSwitch</h2>
 
-    <p>V100 widened NVLink: <strong>6 NVLink 2.0 links</strong> per GPU, each <strong>25 GB/s/dir</strong> &mdash; aggregate <strong>150 GB/s/GPU</strong>, almost double the P100. The lane rate climbed to 25 Gb/s with the same NRZ signalling.</p>
+    <p>V100 widened NVLink: <strong>6 NVLink 2.0 links</strong> per GPU, each <strong>25 GB/s/dir</strong> (50 GB/s bidirectional) &mdash; aggregate <strong>300 GB/s/GPU</strong> bidirectional, almost double the P100. The lane rate climbed to 25 Gb/s with the same NRZ signalling.</p>
 
     <h3>DGX-1V mesh and its limits</h3>
     <p>DGX-1V (V100 edition) used a similar hybrid mesh. With 6 ports per GPU, a fully-connected 8-way mesh is <em>still</em> impossible (would need 7 ports), so two-hop paths remained for some GPU pairs. NVIDIA's answer was to build a switch.</p>
@@ -936,7 +936,7 @@
                 <span class="hierarchy-item">8&times; V100</span>
                 <span class="hierarchy-item">mesh</span>
                 <span class="hierarchy-item">contended hops</span>
-                <span class="hierarchy-item">150 GB/s per GPU</span>
+                <span class="hierarchy-item">300 GB/s per GPU</span>
             </div>
         </div>
     </div>
@@ -1055,7 +1055,7 @@
 
     <div class="callout">
         <div class="callout-label">Doubling, again</div>
-        <p>NVLink 1 80 GB/s, NVLink 2 150 GB/s, NVLink 3 600 GB/s, NVLink 4 900 GB/s, NVLink 5 1800 GB/s. Roughly 1.7&ndash;2&times; per generation. The rate of growth has actually <em>matched</em> compute growth across the same span &mdash; a deliberate co-design choice.</p>
+        <p>NVLink 1 160 GB/s, NVLink 2 300 GB/s, NVLink 3 600 GB/s, NVLink 4 900 GB/s, NVLink 5 1800 GB/s. Roughly 1.5&ndash;2&times; per generation. The rate of growth has actually <em>matched</em> compute growth across the same span &mdash; a deliberate co-design choice.</p>
     </div>
 </section>
 
@@ -1257,14 +1257,14 @@
             <path class="arrow" d="M575 70 Q585 290 575 480" stroke-dasharray="2 2"/>
             <text x="565" y="280" fill="#76B900" font-family="JetBrains Mono, monospace" font-size="10" transform="rotate(90 565 280)">NVLink 5 fabric</text>
 
-            <text x="300" y="510" fill="#8b949e" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">72 B200 + 36 Grace + 9 NVSwitch trays  =  one NVLink domain  =  130 TB/s aggregate, 13.5 TB HBM3e</text>
+            <text x="300" y="510" fill="#8b949e" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">72 B200 + 36 Grace + 9 NVSwitch trays  =  one NVLink domain  =  130 TB/s aggregate, 13.8 TB HBM3e</text>
         </svg>
     </div>
 
     <div class="diagram-grid cols-3">
         <div class="diagram-panel accent-border">
             <h4>Compute</h4>
-            <p>72&times; B200 &rarr; 13.5 TB HBM3e, ~720 PFLOPS FP8 dense.</p>
+            <p>72&times; B200 &rarr; 13.8 TB HBM3e, ~720 PFLOPS FP8 dense.</p>
         </div>
         <div class="diagram-panel accent-border">
             <h4>NVLink fabric</h4>
@@ -1430,7 +1430,7 @@
     (function(){
         // Per-GPU full NVLink aggregate, total HBM, and chip family
         const gpus = {
-            v100: { name:'V100',  nvlink:150,  hbm:32,  fam:'volta',     ports:6,  per:25  },
+            v100: { name:'V100',  nvlink:300,  hbm:32,  fam:'volta',     ports:6,  per:50  },
             a100: { name:'A100',  nvlink:600,  hbm:80,  fam:'ampere',    ports:12, per:50  },
             h100: { name:'H100',  nvlink:900,  hbm:80,  fam:'hopper',    ports:18, per:50  },
             b200: { name:'B200',  nvlink:1800, hbm:192, fam:'blackwell', ports:18, per:100 }
