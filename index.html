@@ -876,7 +876,7 @@
     <div class="slide-number">02</div>
     <h2>NVLink 1 &mdash; Pascal (2016)</h2>
 
-    <p>The P100 introduced NVLink: NVIDIA's answer to "PCIe 3.0 is far too slow to gang GPUs". Each P100 has <strong>4 NVLink 1.0 links</strong>, each carrying <strong>20 GB/s/dir</strong> (40 GB/s bidirectional) &mdash; aggregate <strong>160 GB/s/GPU</strong> bidirectional. That is more than 10&times; PCIe 3.0 x16 (16 GB/s).</p>
+    <p>The P100 introduced NVLink: NVIDIA's answer to "PCIe 3.0 is far too slow to gang GPUs". Each P100 has <strong>4 NVLink 1.0 links</strong>, each carrying <strong>20 GB/s/dir</strong> (40 GB/s bidirectional) &mdash; aggregate <strong>160 GB/s/GPU</strong> bidirectional. That is 5&times; PCIe 3.0 x16 (80 vs 16 GB/s per direction).</p>
 
     <h3>Physical layer</h3>
     <ul>
@@ -902,7 +902,7 @@
 
     <div class="callout">
         <div class="callout-label">Historical aside</div>
-        <p>NVLink 1 was also the link used in the IBM Power8 / Power9 "OpenCAPI" systems &mdash; the only time an NVLink endpoint sat on a non-NVIDIA processor outside of the C2C era. AC922 nodes pushed coherent NVLink 1 between Power9 cores and V100 GPUs.</p>
+        <p>NVLink 1 was also the link used in the IBM Power8+ / Power9 OpenPOWER systems &mdash; the only time an NVLink endpoint sat on a non-NVIDIA processor outside of the C2C era. AC922 nodes pushed coherent NVLink 2.0 between Power9 cores and V100 GPUs.</p>
     </div>
 
     <p>Software view: NCCL learned NVLink topology from <code>nvidia-smi topo -m</code> and chose ring orderings that hugged the direct edges. Even at 80 GB/s the wall was visible &mdash; an 8-way ring all-reduce on P100 was already a measurable fraction of step time on small models.</p>
@@ -953,7 +953,7 @@
     <div class="slide-number">04</div>
     <h2>NVLink 3 &mdash; Ampere (2020)</h2>
 
-    <p>A100 again roughly doubled it: <strong>12 third-generation NVLinks</strong> per GPU at <strong>50 GB/s/dir each</strong> &mdash; aggregate <strong>600 GB/s/GPU</strong>. The link rate hit 50 Gb/s; signalling moved to <strong>NRZ at 50 GBaud</strong>, with much tighter equalisation than NVLink 2.</p>
+    <p>A100 again roughly doubled it: <strong>12 third-generation NVLinks</strong> per GPU at <strong>25 GB/s/dir (50 GB/s bidirectional) each</strong> &mdash; aggregate <strong>600 GB/s/GPU</strong>. The link rate hit 50 Gb/s; signalling moved to <strong>NRZ at 50 GBaud</strong>, with much tighter equalisation than NVLink 2.</p>
 
     <h3>HGX A100 with NVSwitch 2</h3>
     <p>The HGX A100 baseboard hosts <strong>8 A100s</strong> wired through <strong>6 NVSwitch 2 chips</strong>. Every A100 reaches every other A100 over the switch fabric at the full 600 GB/s aggregate. <em>Bisection bandwidth: ~4.8 TB/s.</em></p>
@@ -983,7 +983,7 @@
     <ul>
         <li><strong>TP=8 at full rate</strong> &mdash; Megatron / DeepSpeed scale near-linearly within a single HGX A100.</li>
         <li><strong>Cross-node still needs InfiniBand</strong> &mdash; HDR 200 Gb/s ports per GPU &times; 8 in DGX A100, with GPUDirect RDMA over IB. NVLink does not yet leave the chassis.</li>
-        <li><strong>3rd-gen NVLink + 3rd-gen NVSwitch</strong> become the workhorse of the GPT-3 era. Every "DGX SuperPOD" diagram from 2020&ndash;2022 has this exact topology.</li>
+        <li><strong>3rd-gen NVLink + 2nd-gen NVSwitch</strong> become the workhorse of the GPT-3 era. Every "DGX SuperPOD" diagram from 2020&ndash;2022 has this exact topology.</li>
     </ul>
 
     <div class="callout">
@@ -996,7 +996,7 @@
     <div class="slide-number">05</div>
     <h2>NVLink 4 &mdash; Hopper (2022) and NVLink-C2C</h2>
 
-    <p>H100 brought <strong>18 fourth-generation NVLinks</strong> at <strong>50 GB/s/dir each</strong> &mdash; aggregate <strong>900 GB/s/GPU</strong>. The per-link rate stayed at 50 GB/s; NVIDIA scaled out by adding <em>more</em> links rather than faster ones. Signalling moved to <strong>PAM4</strong> at 100 Gb/s per lane (50 GBaud &times; 2 bits/symbol).</p>
+    <p>H100 brought <strong>18 fourth-generation NVLinks</strong> at <strong>25 GB/s/dir (50 GB/s bidirectional) each</strong> &mdash; aggregate <strong>900 GB/s/GPU</strong>. The per-link rate stayed at 50 GB/s; NVIDIA scaled out by adding <em>more</em> links rather than faster ones. Signalling moved to <strong>PAM4</strong> at 100 Gb/s per lane (50 GBaud &times; 2 bits/symbol).</p>
 
     <h3>NVSwitch 3 in HGX H100</h3>
     <p>HGX H100 keeps the 8-GPU baseboard but with <strong>4 NVSwitch 3 chips</strong>. Every H100 reaches every other at full <strong>900 GB/s</strong>. Bisection bandwidth: ~7.2 TB/s on a single HGX baseboard.</p>
@@ -1024,10 +1024,10 @@
     <div class="slide-number">06</div>
     <h2>NVLink 5 &mdash; Blackwell (2024)</h2>
 
-    <p>B200 doubles per-link bandwidth: <strong>18 fifth-generation NVLinks</strong> at <strong>100 GB/s/dir each</strong> &mdash; aggregate <strong>1.8 TB/s/GPU</strong>. Signalling: <strong>200 Gb/s per lane</strong> (PAM4, 100 GBaud), the same SerDes generation found in 800G Ethernet.</p>
+    <p>B200 doubles per-link bandwidth: <strong>18 fifth-generation NVLinks</strong> at <strong>50 GB/s/dir (100 GB/s bidirectional) each</strong> &mdash; aggregate <strong>1.8 TB/s/GPU</strong>. Signalling: <strong>200 Gb/s per lane</strong> (PAM4, 100 GBaud), the same SerDes generation found in 800G Ethernet.</p>
 
     <h3>NVSwitch 4 + NVLink-Sharp</h3>
-    <p>NVSwitch 4 keeps the radix model but adds <strong>NVLink-Sharp</strong>: in-network reductions. The switch can <em>compute</em> the partial sum of an all-reduce at the fabric level, halving the data each GPU has to receive. This is most of how the NVL72 hits its claimed all-reduce speedups versus an HGX H100 baseline.</p>
+    <p>NVSwitch 4 keeps the radix model and carries forward (from NVSwitch 3) <strong>NVLink-Sharp</strong>: in-network reductions. The switch can <em>compute</em> the partial sum of an all-reduce at the fabric level, halving the data each GPU has to receive. This is most of how the NVL72 hits its claimed all-reduce speedups versus an HGX H100 baseline.</p>
 
     <h3>The fabric leaves the chassis</h3>
     <p>For the first time, NVLink is designed to span <strong>more than one box</strong> at full bandwidth. The NVL72 (next slide) is the first product to show what that means in practice.</p>
@@ -1048,7 +1048,7 @@
                 <li>14.4 TB/s per switch</li>
                 <li>NVLink-Sharp in-network reduction</li>
                 <li>9 switches per NVL72 rack</li>
-                <li>Optical DACs link compute trays</li>
+                <li>Copper NVLink spine cables link compute and switch trays</li>
             </ul>
         </div>
     </div>
@@ -1257,14 +1257,14 @@
             <path class="arrow" d="M575 70 Q585 290 575 480" stroke-dasharray="2 2"/>
             <text x="565" y="280" fill="#b8b315" font-family="Roboto Mono, monospace" font-size="10" transform="rotate(90 565 280)">NVLink 5 fabric</text>
 
-            <text x="300" y="510" fill="#9b9b95" font-family="Titillium Web, sans-serif" font-size="11" text-anchor="middle">72 B200 + 36 Grace + 9 NVSwitch trays  =  one NVLink domain  =  130 TB/s aggregate, 13.8 TB HBM3e</text>
+            <text x="300" y="510" fill="#9b9b95" font-family="Titillium Web, sans-serif" font-size="11" text-anchor="middle">72 B200 + 36 Grace + 9 NVSwitch trays  =  one NVLink domain  =  130 TB/s aggregate, 13.4 TB HBM3e</text>
         </svg>
     </div>
 
     <div class="diagram-grid cols-3">
         <div class="diagram-panel accent-border">
             <h4>Compute</h4>
-            <p>72&times; B200 &rarr; 13.8 TB HBM3e, ~720 PFLOPS FP8 dense.</p>
+            <p>72&times; B200 &rarr; 13.4 TB HBM3e, ~360 PFLOPS FP8 dense (720 sparse).</p>
         </div>
         <div class="diagram-panel accent-border">
             <h4>NVLink fabric</h4>
@@ -1291,7 +1291,7 @@
     <h3>Grace-Hopper (GH200)</h3>
     <ul>
         <li><strong>Grace CPU:</strong> 72 Arm Neoverse V2 cores with up to <strong>480 GB LPDDR5x</strong> on-package at 384 GB/s.</li>
-        <li><strong>Hopper GPU:</strong> 96 GB HBM3 at ~3 TB/s.</li>
+        <li><strong>Hopper GPU:</strong> 96 GB HBM3 at ~4 TB/s.</li>
         <li><strong>NVLink-C2C:</strong> 900 GB/s coherent.</li>
         <li>From CUDA's perspective, the LPDDR5x looks like a slow tier of GPU memory &mdash; addressable, allocatable, page-migratable.</li>
     </ul>
@@ -1334,7 +1334,7 @@
             <tbody>
                 <tr><td>PCIe 4 x16</td><td>32 GB/s</td><td>32 GB/s</td><td>chassis</td><td>no</td></tr>
                 <tr><td>PCIe 5 x16</td><td>64 GB/s</td><td>64 GB/s</td><td>chassis</td><td>no (CXL.cache adds it)</td></tr>
-                <tr><td>NVLink bridge (consumer)</td><td>56 GB/s/link</td><td>112 GB/s (3090)</td><td>2 cards</td><td>no</td></tr>
+                <tr><td>NVLink bridge (consumer)</td><td>28 GB/s/link (4 links)</td><td>112 GB/s (3090)</td><td>2 cards</td><td>no</td></tr>
                 <tr><td>NVLink 3 (A100)</td><td>50 GB/s/link</td><td>600 GB/s</td><td>chassis (HGX)</td><td>no</td></tr>
                 <tr><td>NVLink 4 (H100)</td><td>50 GB/s/link</td><td>900 GB/s</td><td>chassis (HGX)</td><td>no (C2C is coherent)</td></tr>
                 <tr><td>NVLink 5 (B200)</td><td>100 GB/s/link</td><td>1800 GB/s</td><td>rack (NVL72)</td><td>no (C2C is coherent)</td></tr>
