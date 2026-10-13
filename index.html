@@ -872,6 +872,11 @@
         <div class="callout-label">The point of every slide that follows</div>
         <p>Every NVLink generation roughly doubles per-GPU bandwidth. Every NVSwitch generation extends the domain over which that bandwidth is uniform. Together they push the wall at which TP stops scaling further out, generation by generation.</p>
     </div>
+
+    <div class="callout">
+        <div class="callout-label">Animated companion</div>
+        <p>The ring all-reduce animated on real numbers, timed over NVLink and over the network: AI Racks Explained, <a href="https://ai-racks-explained.vercel.app/learn/04-scale-up-nvlink" style="color: var(--accent);">chapter 4, Scale-up: NVLink and NVSwitch</a>.</p>
+    </div>
 </section>
 
 <section class="slide" id="slide-02">
@@ -1047,9 +1052,9 @@
         <div class="diagram-panel accent-border">
             <h4>NVSwitch 4</h4>
             <ul>
-                <li>14.4 TB/s per switch</li>
+                <li>14.4 TB/s per switch tray (two 72-port NVSwitch chips)</li>
                 <li>NVLink-Sharp in-network reduction</li>
-                <li>9 switches per NVL72 rack</li>
+                <li>9 switch trays (18 NVSwitch chips) per NVL72 rack</li>
                 <li>Copper NVLink spine cables link compute and switch trays</li>
             </ul>
         </div>
@@ -1282,6 +1287,11 @@
         <div class="callout-label">Why this matters for TP/PP</div>
         <p>Tensor parallelism scales until per-step all-reduce eats more time than compute. At 1.8 TB/s per GPU and 72-way fabric, TP=8 to TP=16 fits comfortably inside one NVL72; pipeline parallelism across 8&ndash;9 stages also stays in NVLink. <strong>No InfiniBand round trips at every layer.</strong></p>
     </div>
+
+    <div class="callout">
+        <div class="callout-label">Animated companion</div>
+        <p>The NVL72's wiring (1,296 GPU links filling 1,296 switch ports) and collectives across it, animated: AI Racks Explained, <a href="https://ai-racks-explained.vercel.app/learn/04-scale-up-nvlink" style="color: var(--accent);">chapter 4, Scale-up: NVLink and NVSwitch</a>; prefill and decode pools sharing one such rack, run on a tested simulator: <a href="https://ai-racks-explained.vercel.app/learn/08-disaggregated-inference" style="color: var(--accent);">chapter 8, disaggregated inference on a rack</a>.</p>
+    </div>
 </section>
 
 <section class="slide" id="slide-09">
@@ -1301,8 +1311,8 @@
     <h3>Grace-Blackwell (GB200)</h3>
     <ul>
         <li>Same C2C link, two B200s per Grace in the GB200 superchip.</li>
-        <li>Per Grace CPU: <strong>up to 480 GB LPDDR5x</strong> &mdash; gives the pair of B200s effectively 480 GB of cheap "swap" tier on top of 384 GB HBM3e.</li>
-        <li>This is what makes the NVL72 hold &gt; 30 TB of total addressable memory across the rack &mdash; the LPDDR5x dominates the absolute capacity.</li>
+        <li>Per Grace CPU: <strong>up to 480 GB LPDDR5x</strong> &mdash; gives the pair of B200s effectively 480 GB of cheap "swap" tier on top of 372 GB HBM3e (2 &times; 186 GB in GB200 NVL72).</li>
+        <li>This is what makes the NVL72 hold &gt; 30 TB of total addressable memory across the rack (NVIDIA: 17 TB LPDDR5X plus 13.4 TB HBM3E) &mdash; the LPDDR5x is the larger share.</li>
     </ul>
 
     <h3>DGX Spark</h3>
@@ -1382,6 +1392,11 @@
     <div class="callout">
         <div class="callout-label">Rule of thumb</div>
         <p>Run TP <em>inside</em> an NVLink domain (one HGX, or one NVL72). Run PP and DP across the InfiniBand fabric between racks. Plan around the slowest link in your collective chain &mdash; if any leg traverses IB, pick a parallelism strategy that keeps activation traffic off it.</p>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">Animated companion</div>
+        <p>Leaf, spine and core switches for the GPUs beyond the rack, built tier by tier: AI Racks Explained, <a href="https://ai-racks-explained.vercel.app/learn/05-scale-out-network" style="color: var(--accent);">chapter 5, Scale-out: the network</a>; which training traffic lands on NVLink and which on the network: <a href="https://ai-racks-explained.vercel.app/learn/09-training-clusters" style="color: var(--accent);">chapter 9, training clusters</a>.</p>
     </div>
 </section>
 
@@ -1560,6 +1575,7 @@
 <footer class="footer">
     <p>Part of the <a href="https://github.com/BrendanJamesLynskey/LLMs#nvidia-gpu-architectures">NVIDIA GPU Architectures Series</a></p>
     <p style="margin-top: 0.5rem; font-size: 0.8rem;"><a href="https://github.com/BrendanJamesLynskey/LLMs#nvidia-gpu-architectures">Back to Series Index</a></p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;">Animated companion site: <a href="https://ai-racks-explained.vercel.app/">AI Racks Explained</a> &mdash; the machines underneath, chip to rack, each chapter around a model-driven animation with every figure sourced.</p>
 </footer>
 
 <script>
